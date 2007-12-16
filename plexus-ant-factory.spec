@@ -44,7 +44,7 @@
 
 Name:           %{parent}-%{subname}
 Version:        1.0
-Release:        %mkrel 0.1.a1.2jpp.2.2
+Release:        %mkrel 0.1.a1.2jpp.2.3
 Epoch:          0
 Summary:        Plexus Ant component factory
 License:        MIT-Style
@@ -63,7 +63,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch:      noarch
 %endif
 
-BuildRequires:  jpackage-utils >= 0:1.7.2
+BuildRequires:  java-rpmbuild >= 0:1.7.2
 %if %{with_maven}
 BuildRequires:    maven2 >= 2.0.4-9
 BuildRequires:    maven2-plugin-compiler
