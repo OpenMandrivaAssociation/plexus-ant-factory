@@ -57,6 +57,7 @@ Source0:        %{name}-src.tar.gz
 Source1:        %{name}-jpp-depmap.xml
 Source2:        %{name}-build.xml
 
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %if ! %{gcj_support}
 BuildArch:      noarch
