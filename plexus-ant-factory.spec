@@ -44,7 +44,7 @@
 
 Name:           %{parent}-%{subname}
 Version:        1.0
-Release:        %mkrel 0.1.a1.2jpp.2.3
+Release:        %mkrel 0.1.a1.2jpp.2.4
 Epoch:          0
 Summary:        Plexus Ant component factory
 License:        MIT-Style
