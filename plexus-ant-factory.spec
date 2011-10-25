@@ -28,51 +28,42 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define _with_gcj_support 1
-%define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:
-  %{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:
-  %{_gcj_support}}%{!?_gcj_support:0}}}
-
 %define with_maven %{!?_without_maven:1}%{?_without_maven:0}
 %define without_maven %{?_without_maven:1}%{!?_without_maven:0}
-
-%define without_maven 1
-%define with_maven 0
 
 %define parent plexus
 %define subname ant-factory
 
 Name:           %{parent}-%{subname}
 Version:        1.0
-Release:        %mkrel 0.1.a1.2jpp.2.7
-Epoch:          0
+Release:        0.5.a2.1.2
 Summary:        Plexus Ant component factory
-License:        MIT-Style
+# Email from copyright holder confirms license.
+License:        ASL 2.0
 Group:          Development/Java
 URL:            http://plexus.codehaus.org/
-Source0:        %{name}-src.tar.gz
-# svn export svn://svn.plexus.codehaus.org/plexus/tags/
-#            plexus-ant-factory-1.0-alpha-1 plexus-ant-factory/
-# tar czf plexus-ant-factory-src.tar.gz plexus-ant-factory/
+Source0:        %{name}-src.tar.bz2
+# svn export http://svn.codehaus.org/plexus/tags/plexus-ant-factory-1.0-alpha-2.1/ plexus-ant-factory/
+# tar cjf plexus-ant-factory-src.tar.bz2 plexus-ant-factory/
 Source1:        %{name}-jpp-depmap.xml
 Source2:        %{name}-build.xml
+Source3:	plexus-ant-factory_license_and_copyright.txt
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-%if ! %{gcj_support}
 BuildArch:      noarch
-%endif
 
-BuildRequires:  java-rpmbuild >= 0:1.7.2
+BuildRequires:  jpackage-utils >= 0:1.7.2
 %if %{with_maven}
 BuildRequires:    maven2 >= 2.0.4-9
 BuildRequires:    maven2-plugin-compiler
 BuildRequires:    maven2-plugin-install
 BuildRequires:    maven2-plugin-jar
 BuildRequires:    maven2-plugin-javadoc
-BuildRequires:    maven2-plugin-release
 BuildRequires:    maven2-plugin-resources
-BuildRequires:    maven2-plugin-surefire
+BuildRequires:    maven-surefire-maven-plugin
+BuildRequires:    maven-surefire-provider-junit
+BuildRequires:    maven-doxia-sitetools
 BuildRequires:    maven2-common-poms >= 1.0-2
 %endif
 BuildRequires:    ant
@@ -88,10 +79,6 @@ Requires:    plexus-utils
 Requires(post):    jpackage-utils >= 0:1.7.2
 Requires(postun):  jpackage-utils >= 0:1.7.2
 
-%if %{gcj_support}
-BuildRequires:       java-gcj-compat-devel
-%endif
-
 %description
 Ant component class creator for Plexus.
 
@@ -99,8 +86,9 @@ Ant component class creator for Plexus.
 %package javadoc
 Summary:        Javadoc for %{name}
 Group:          Development/Java
-Requires(pre):    /bin/rm,/bin/ls
-Requires(post):    /bin/rm
+# for /bin/rm and /bin/ls
+Requires(pre):    coreutils
+Requires(post):   coreutils
 
 %description javadoc
 Javadoc for %{name}.
@@ -108,6 +96,7 @@ Javadoc for %{name}.
 
 %prep
 %setup -q -n %{name}
+cp %{SOURCE3} .
 
 %if %{without_maven}
     cp -p %{SOURCE2} build.xml
@@ -134,7 +123,7 @@ Javadoc for %{name}.
                             classworlds \
                             plexus/container-default \
                             plexus/utils
-    %{ant} -Dmaven.mode.offline=true
+    ant -Dmaven.mode.offline=true
 
 %endif
 
@@ -165,45 +154,27 @@ install -pm 644 pom.xml \
                 $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
 %endif
 
-%if %{gcj_support}
-%{_bindir}/aot-compile-rpm
-%endif
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
 %update_maven_depmap
 
 %postun
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
 %update_maven_depmap
 
 %files
 %defattr(-,root,root,-)
+%doc plexus-ant-factory_license_and_copyright.txt
 %dir %{_javadir}/plexus
 %{_javadir}/plexus
 %{_datadir}/maven2
-%config(noreplace) %{_mavendepmapfragdir}/*
-
-%if %{gcj_support}
-%dir %attr(-,root,root) %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/ant-factory-1.0.jar.*
-%endif
+%{_mavendepmapfragdir}
 
 %if %{with_maven}
 %files javadoc
 %defattr(-,root,root,-)
 %doc %{_javadocdir}/*
 %endif
+
+
