@@ -36,7 +36,7 @@
 
 Name:           %{parent}-%{subname}
 Version:        1.0
-Release:        0.5.a2.1.2
+Release:        0.5.a2.1.4
 Summary:        Plexus Ant component factory
 # Email from copyright holder confirms license.
 License:        ASL 2.0
