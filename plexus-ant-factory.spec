@@ -128,34 +128,34 @@ cp %{SOURCE3} .
 %endif
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 # jars
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/plexus
+install -d -m 755 %{buildroot}%{_javadir}/plexus
 install -pm 644 target/*.jar \
-      $RPM_BUILD_ROOT%{_javadir}/%{parent}/%{subname}-%{version}.jar
+      %{buildroot}%{_javadir}/%{parent}/%{subname}-%{version}.jar
 %add_to_maven_depmap org.codehaus.plexus %{name} 1.0-alpha-1 JPP/%{parent} %{subname}
 
-(cd $RPM_BUILD_ROOT%{_javadir}/%{parent} && for jar in *-%{version}*; \
+(cd %{buildroot}%{_javadir}/%{parent} && for jar in *-%{version}*; \
   do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
 
 # pom
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
+install -d -m 755 %{buildroot}%{_datadir}/maven2/poms
 install -pm 644 pom.xml \
-          $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.%{parent}-%{subname}.pom
+          %{buildroot}%{_datadir}/maven2/poms/JPP.%{parent}-%{subname}.pom
 
 # javadoc
 %if %{with_maven}
-    install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+    install -d -m 755 %{buildroot}%{_javadocdir}/%{name}-%{version}
 
     cp -pr target/site/apidocs/* \
-        $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}/
+        %{buildroot}%{_javadocdir}/%{name}-%{version}/
 
     ln -s %{name}-%{version} \
-                $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
+                %{buildroot}%{_javadocdir}/%{name} # ghost symlink
 %endif
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post
 %update_maven_depmap
