@@ -1,5 +1,2 @@
 sources:
-  "plexus-ant-factory-build.xml:"	b75c8647b9b178d91204f127a4517e94321a12d5
-  "plexus-ant-factory-jpp-depmap.xml:"	9234a2ea74788062342ae6114b0a893a28ee15f1
-  "plexus-ant-factory_license_and_copyright.txt:"	0e147af3756b92de56ce75790cc1d1d198b65ee3
-  "plexus-ant-factory-src.tar.bz2:"	b616af1c7ef2ef49cf288293e732ef67541bd3a7
+  "plexus-ant-factory-src.tar.gz": 08d3742d7d3d594b4a17a5369eb3274b4a448d4d
