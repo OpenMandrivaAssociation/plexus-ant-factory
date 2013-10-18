@@ -42,73 +42,64 @@
 %define parent plexus
 %define subname ant-factory
 
-Name:           %{parent}-%{subname}
-Version:        1.0
-Release:        0.1.a1.2jpp.2.7
-Epoch:          0
-Summary:        Plexus Ant component factory
-License:        MIT-Style
-Group:          Development/Java
-URL:            http://plexus.codehaus.org/
-Source0:        %{name}-src.tar.gz
+Summary:	Plexus Ant component factory
+Name:		%{parent}-%{subname}
+Version:	1.0
+Release:	0.1.a1.2jpp.2.7
+License:	MIT-Style
+Group:		Development/Java
+Url:		http://plexus.codehaus.org/
+Source0:	%{name}-src.tar.gz
 # svn export svn://svn.plexus.codehaus.org/plexus/tags/
 #            plexus-ant-factory-1.0-alpha-1 plexus-ant-factory/
 # tar czf plexus-ant-factory-src.tar.gz plexus-ant-factory/
-Source1:        %{name}-jpp-depmap.xml
-Source2:        %{name}-build.xml
-
+Source1:	%{name}-jpp-depmap.xml
+Source2:	%{name}-build.xml
 %if ! %{gcj_support}
-BuildArch:      noarch
+BuildArch:	noarch
+%else
+BuildRequires:	java-gcj-compat-devel
 %endif
-
-BuildRequires:  java-rpmbuild >= 0:1.7.2
+BuildRequires:	java-rpmbuild >= 0:1.7.2
 %if %{with_maven}
-BuildRequires:    maven2 >= 2.0.4-9
-BuildRequires:    maven2-plugin-compiler
-BuildRequires:    maven2-plugin-install
-BuildRequires:    maven2-plugin-jar
-BuildRequires:    maven2-plugin-javadoc
-BuildRequires:    maven2-plugin-release
-BuildRequires:    maven2-plugin-resources
-BuildRequires:    maven2-plugin-surefire
-BuildRequires:    maven2-common-poms >= 1.0-2
+BuildRequires:	maven2 >= 2.0.4-9
+BuildRequires:	maven2-plugin-compiler
+BuildRequires:	maven2-plugin-install
+BuildRequires:	maven2-plugin-jar
+BuildRequires:	maven2-plugin-javadoc
+BuildRequires:	maven2-plugin-release
+BuildRequires:	maven2-plugin-resources
+BuildRequires:	maven2-plugin-surefire
+BuildRequires:	maven2-common-poms >= 1.0-2
 %endif
-BuildRequires:    ant
-BuildRequires:    classworlds
-BuildRequires:    plexus-container-default
-BuildRequires:    plexus-utils
+BuildRequires:	ant
+BuildRequires:	classworlds
+BuildRequires:	plexus-container-default
+BuildRequires:	plexus-utils
 
-Requires:    ant
-Requires:    classworlds
-Requires:    plexus-container-default
-Requires:    plexus-utils
-
-Requires(post):    jpackage-utils >= 0:1.7.2
-Requires(postun):  jpackage-utils >= 0:1.7.2
-
-%if %{gcj_support}
-BuildRequires:       java-gcj-compat-devel
-%endif
+Requires:	ant
+Requires:	classworlds
+Requires:	plexus-container-default
+Requires:	plexus-utils
+Requires(post,postun):	jpackage-utils >= 0:1.7.2
 
 %description
 Ant component class creator for Plexus.
 
 %if %{with_maven}
 %package javadoc
-Summary:        Javadoc for %{name}
-Group:          Development/Java
+Summary:	Javadoc for %{name}
+Group:		Development/Java
 
 %description javadoc
 Javadoc for %{name}.
 %endif
 
 %prep
-%setup -q -n %{name}
-
+%setup -qn %{name}
 %if %{without_maven}
     cp -p %{SOURCE2} build.xml
 %endif
-
 
 %build
 %if %{with_maven}
@@ -135,36 +126,33 @@ Javadoc for %{name}.
 
 %install
 # jars
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/plexus
+install -d -m 755 %{buildroot}%{_javadir}/plexus
 install -pm 644 target/*.jar \
-      $RPM_BUILD_ROOT%{_javadir}/%{parent}/%{subname}-%{version}.jar
+      %{buildroot}%{_javadir}/%{parent}/%{subname}-%{version}.jar
 %add_to_maven_depmap org.codehaus.plexus %{name} 1.0-alpha-1 JPP/%{parent} %{subname}
 
-(cd $RPM_BUILD_ROOT%{_javadir}/%{parent} && for jar in *-%{version}*; \
+(cd %{buildroot}%{_javadir}/%{parent} && for jar in *-%{version}*; \
   do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
 
 # pom
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
+install -d -m 755 %{buildroot}%{_datadir}/maven2/poms
 install -pm 644 pom.xml \
-          $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.%{parent}-%{subname}.pom
+          %{buildroot}%{_datadir}/maven2/poms/JPP.%{parent}-%{subname}.pom
 
 # javadoc
 %if %{with_maven}
-    install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+    install -d -m 755 %{buildroot}%{_javadocdir}/%{name}-%{version}
 
     cp -pr target/site/apidocs/* \
-        $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}/
+        %{buildroot}%{_javadocdir}/%{name}-%{version}/
 
     ln -s %{name}-%{version} \
-                $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
+                %{buildroot}%{_javadocdir}/%{name} # ghost symlink
 %endif
 
 %if %{gcj_support}
 %{_bindir}/aot-compile-rpm
 %endif
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %if %{gcj_support}
@@ -199,57 +187,3 @@ fi
 %doc %{_javadocdir}/*
 %endif
 
-
-%changelog
-* Fri Dec 03 2010 Oden Eriksson <oeriksson@mandriva.com> 0:1.0-0.1.a1.2jpp.2.6mdv2011.0
-+ Revision: 607180
-- rebuild
-
-* Wed Mar 17 2010 Oden Eriksson <oeriksson@mandriva.com> 0:1.0-0.1.a1.2jpp.2.5mdv2010.1
-+ Revision: 523666
-- rebuilt for 2010.1
-
-* Thu Sep 03 2009 Christophe Fergeau <cfergeau@mandriva.com> 0:1.0-0.1.a1.2jpp.2.4mdv2010.0
-+ Revision: 426729
-- rebuild
-
-* Wed Jan 02 2008 Olivier Blin <oblin@mandriva.com> 0:1.0-0.1.a1.2jpp.2.3mdv2009.0
-+ Revision: 140733
-- restore BuildRoot
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - kill re-definition of %%buildroot on Pixel's request
-
-* Sun Dec 16 2007 Anssi Hannula <anssi@mandriva.org> 0:1.0-0.1.a1.2jpp.2.3mdv2008.1
-+ Revision: 120996
-- buildrequire java-rpmbuild, i.e. build with icedtea on x86(_64)
-
-* Sat Sep 15 2007 Anssi Hannula <anssi@mandriva.org> 0:1.0-0.1.a1.2jpp.2.2mdv2008.0
-+ Revision: 87282
-- rebuild to filter out autorequires of GCJ AOT objects
-- remove unnecessary Requires(post) on java-gcj-compat
-
-* Wed Jul 04 2007 David Walluck <walluck@mandriva.org> 0:1.0-0.1.a1.2jpp.2.1mdv2008.0
-+ Revision: 47869
-- Import plexus-ant-factory
-
-
-
-
-* Tue Mar 20 2007 Deepak Bhole <dbhole@redhat.com> 1.0-0.1.a1.2jpp.2
-- Build with maven
-
-* Fri Feb 23 2007 Tania Bento <tbento@redhat.com> 0:1.0-0.1.a1.2jpp.1
-- Fixed %%Release.
-- Fixed %%BuildRoot.
-- Removed %%Vendor.
-- Removed %%Distribution.
-- Removed %%post and %%postun sections for javadoc.
-- Defined _with_gcj_supoprt and _gcj_support.
-- Changed to use cp -p to preserve timestamps.
-
-* Tue Oct 17 2006 Deepak Bhole <dbhole@redhat.com> 1.0-0.a1.2jpp
-- Update for maven2 9jpp.
-
-* Thu Sep 07 2006 Deepak Bhole <dbhole@redhat.com> 1.0-0.a1.1jpp
-- Initial build
