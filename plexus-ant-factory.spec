@@ -79,7 +79,10 @@ cp %{SOURCE1} LICENSE
 
 %install
 %mvn_install
-
+%if 0%{?fedora}
+%else
+sed -i "s|1.0-alpha-2.1|1.0.alpha.2.1|" %{buildroot}%{_mavendepmapfragdir}/*
+%endif
 
 %pre javadoc
 # workaround for rpm bug, can be removed in F-20
