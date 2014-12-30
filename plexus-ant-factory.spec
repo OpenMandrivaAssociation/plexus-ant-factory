@@ -34,9 +34,10 @@
 
 Name:           %{parent}-%{subname}
 Version:        1.0
-Release:        0.13.a2.1.0%{?dist}
+Release:        0.12.a2.1.1
 Epoch:          0
 Summary:        Plexus Ant component factory
+Group:		Development/Java
 # Email from copyright holder confirms license.
 # See plexus-ant-factory_license_and_copyright.txt
 License:        ASL 2.0
@@ -52,7 +53,7 @@ BuildArch:      noarch
 BuildRequires:  maven-local
 
 BuildRequires:  ant
-BuildRequires:  classworlds
+BuildRequires:  plexus-classworlds
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-utils
 BuildRequires:  plexus-component-factories-pom
@@ -75,13 +76,13 @@ cp %{SOURCE1} LICENSE
 
 %build
 %mvn_file  : %{parent}/%{subname}
-%mvn_build
+%mvn_build -f
 
 %install
 %mvn_install
 %if 0%{?fedora}
 %else
-sed -i "s|1.0-alpha-2.1|1.0.alpha.2.1|" %{buildroot}%{_mavendepmapfragdir}/*
+sed -i "s|1.0-alpha-2.1|1.0.alpha.2.1|" %{buildroot}%{_datadir}/maven-metadata/*
 %endif
 
 %pre javadoc
