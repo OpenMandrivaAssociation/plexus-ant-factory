@@ -42,7 +42,7 @@ Group:		Development/Java
 # See plexus-ant-factory_license_and_copyright.txt
 License:        ASL 2.0
 
-URL:            http://plexus.codehaus.org/
+URL:            https://plexus.codehaus.org/
 Source0:        %{name}-src.tar.bz2
 # svn export http://svn.codehaus.org/plexus/tags/plexus-ant-factory-1.0-alpha-2.1/ plexus-ant-factory/
 # tar cjf plexus-ant-factory-src.tar.bz2 plexus-ant-factory/
